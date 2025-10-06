@@ -1,10 +1,15 @@
 {
+  lib,
   edk2-platform,
   applyPatches,
   fetchFromGitHub,
   openssl,
   acpica-tools,
   armTrustedFirmwareTools,
+  tpmSupport ? false,
+  secureBoot ? false,
+  httpSupport ? false,
+  redfishSupport ? false,
 }:
 (edk2-platform.override {
   extraWorkspaceSources = {
@@ -61,6 +66,17 @@
       "-Wno-error=format-security"
     ];
 
+    buildFlags = [
+      "-D NETWORK_IP6_ENABLE=TRUE"
+      "-D REDFISH_ENABLE=${lib.boolToString redfishSupport}"
+      "-D NETWORK_HTTP_ENABLE=${lib.boolToString httpSupport}"
+      "-D NETWORK_HTTP_BOOT_ENABLE=${lib.boolToString httpSupport}"
+      "-D SECURE_BOOT_ENABLE=${lib.boolToString secureBoot}"
+      "-D TPM_ENABLE=${lib.boolToString tpmSupport}"
+      "-D TPM2_ENABLE=${lib.boolToString tpmSupport}"
+      "-D TPM2_CONFIG_ENABLE=${lib.boolToString tpmSupport}"
+    ];
+
     prePatch = ''
       patchShebangs edk2-platforms/Platform/Ampere/Tools/GenerateSecureBootKeys.sh
     '';
@@ -83,6 +99,13 @@
       "''${WORKSPACE}/edk2-platforms/Platform/Ampere/Tools/GenerateSecureBootKeys.sh"
 
       rm $SECUREBOOT_DIR/certs/ms_{kek{1,2},db{1,2,3,4,5}}.der
+    '';
+
+    preBuild = lib.optionalString secureBoot ''
+      buildFlags+=(
+        "-D PK_DEFAULT_FILE=''${SECUREBOOT_DIR}/certs/platform_key.der"
+        "-D DBX_DEFAULT_FILE1=''${SECUREBOOT_DIR}/certs/dummy_dbx.der"
+      )
     '';
 
     postInstall = ''
