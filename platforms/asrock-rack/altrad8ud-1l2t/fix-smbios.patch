@@ -1,0 +1,13 @@
+diff --git a/Platform/ASRockRack/AltraBoardPkg/Library/OemMiscLib/OemMiscLib.c b/Platform/ASRockRack/AltraBoardPkg/Library/OemMiscLib/OemMiscLib.c
+index ec7c0ffb..55d37dba 100644
+--- a/Platform/ASRockRack/AltraBoardPkg/Library/OemMiscLib/OemMiscLib.c
++++ b/Platform/ASRockRack/AltraBoardPkg/Library/OemMiscLib/OemMiscLib.c
+@@ -161,7 +161,7 @@ OemGetCacheInformation (
+   )
+ {
+   SMBIOS_CACHE_SIZE   CacheSize16;
+-  SMBIOS_CACHE_SIZE2  CacheSize32;
++  SMBIOS_CACHE_SIZE_2 CacheSize32;
+   UINT64              CacheSize64;
+   UINT8               Granularity32;
+ 
