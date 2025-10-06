@@ -84,4 +84,10 @@
 
       rm $SECUREBOOT_DIR/certs/ms_{kek{1,2},db{1,2,3,4,5}}.der
     '';
+
+    postInstall = ''
+      python3 "''${WORKSPACE}/edk2-ampere-tools/nvparam.py" \
+        -f edk2-platforms/Platform/''${MANUFACTURER}/''${BOARD_NAME}Pkg/''${BOARD_NAME}BoardSetting.cfg \
+        -o $out/board_cfg.bin
+    '';
   }
